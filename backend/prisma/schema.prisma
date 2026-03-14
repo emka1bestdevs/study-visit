@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Country {
+  code         String            @id
+  name         String
+  universities University[]
+  placeCache   CountryPlaceCache?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+model University {
+  id            Int                   @id @default(autoincrement())
+  name          String
+  countryCode   String
+  country       Country               @relation(fields: [countryCode], references: [code], onDelete: Restrict)
+  city          String?
+  website       String?
+  imageUrl      String?
+  domains       Json?
+  googlePlaceId String?               @unique
+  faculties     Faculty[]
+  reviewCache   UniversityReviewCache?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@index([countryCode])
+  @@index([name])
+  @@index([googlePlaceId])
+}
+
+model Faculty {
+  id           Int        @id @default(autoincrement())
+  universityId Int
+  name         String
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  programs     Program[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([universityId])
+  @@index([name])
+  @@unique([universityId, name])
+}
+
+model Program {
+  id        Int      @id @default(autoincrement())
+  facultyId Int
+  name      String
+  slug      String
+  faculty   Faculty  @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([facultyId])
+  @@index([name])
+  @@index([slug])
+  @@unique([facultyId, slug])
+}
+
+model UniversityReviewCache {
+  universityId Int        @id
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  payload      Json
+  fetchedAt    DateTime
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model CountryPlaceCache {
+  countryCode String   @id
+  country     Country  @relation(fields: [countryCode], references: [code], onDelete: Cascade)
+  payload     Json
+  fetchedAt   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
