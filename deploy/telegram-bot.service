@@ -1,0 +1,20 @@
+# Пример: скопировать в /etc/systemd/system/study-visit-telegram-bot.service,
+# выставить User= и пути, создать telegram-bot/.env с TELEGRAM_BOT_TOKEN,
+# затем: sudo systemctl daemon-reload && sudo systemctl enable --now study-visit-telegram-bot
+
+[Unit]
+Description=Study & Visit Telegram bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/study-visit
+EnvironmentFile=/var/www/study-visit/telegram-bot/.env
+ExecStart=/usr/bin/npm run start --workspace=telegram-bot
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

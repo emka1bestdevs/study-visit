@@ -5,13 +5,16 @@
   "workspaces": [
     "frontend",
     "backend",
-    "shared"
+    "shared",
+    "telegram-bot"
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace backend\" \"npm run dev --workspace frontend\"",
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present"
+    "lint": "npm run lint --workspaces --if-present",
+    "dev:telegram-bot": "npm run dev --workspace telegram-bot",
+    "start:telegram-bot": "npm run start --workspace telegram-bot"
   },
   "devDependencies": {
     "concurrently": "^9.0.1"

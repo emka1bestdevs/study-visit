@@ -1,0 +1,13 @@
+{
+  "name": "telegram-bot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/bot.mjs",
+    "dev": "node --watch src/bot.mjs"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "telegraf": "^4.16.3"
+  }
+}
